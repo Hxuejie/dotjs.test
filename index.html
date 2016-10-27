@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		.frame{
+			background-color: #333;
+		}
+
+		.text{
+			font-size: 30px;
+			color: white;
+			line-height: 30px;
+			margin: 0px;
+		}
+
+		.redText{
+			font-size: 30px;
+			color: red;
+			line-height: 30px;
+			margin: 0px;
+		}
+		.greenText{
+			font-size: 30px;
+			color: green;
+			line-height: 30px;
+			margin: 0px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="frame" id="frame">
+		
+	</div>
+	<br>
+	<div class="frame" id="frame2">
+		
+	</div>
+
+<script type="text/javascript" src="./doT.js"></script>
+<script id="testTemplate" type="text/x-dot-template">
+	<p class="text">text</p>
+	<p class="text">{{=it.name}}</p>
+	<p class="text">{{=it.age}}</p>
+
+	<p class="text">===========================</p>
+	{{ for (var k in it) { }}
+		{{? k=="name"}}
+			<p class="redText">{{=k}} = {{=it[k]}}</p>
+		{{?? it[k]==31}}
+			<p class="greenText">{{=k}} = {{=it[k]}}</p>
+		{{??}}
+			<p class="text">{{=k}} = {{=it[k]}}</p>
+		{{?}}
+	{{ } }}
+	<p class="text">===========================</p>
+	{{~it.citys:v:i}}
+		<p class="text">{{=i}}:{{=v}}</p>
+	{{~}}
+	{{~cityArray:v:i}}
+		<p class="text">{{=i}}:{{=v}}</p>
+	{{~}}
+	<p class="text">===========================</p>
+	<p class="text">Visit {{!dataEncode.uri}} {{!dataEncode.html}}</p>
+
+</script>
+<script id="parttmpl" type="text/x-dot-template">
+	{{##def.snippet:
+		<div class="redText">{{=it.name}}</div>{{#def.joke}}
+	#}}
+	{{#def.snippet}}
+	{{=it.html}}
+</script>
+
+<script type="text/javascript">
+	var data = {"name":"Jake","age":31,"citys":["A","B","C"]};
+	var cityArray = ["杭州","上海","北京"];
+	var dataEncode = {"uri":"http://bebedo.com/?keywords=Yoga","html":"<div style='background: #f00; height: 30px; line-height: 30px;'>html元素</div>"};
+
+	var template = document.getElementById("testTemplate");
+	var templateFun = doT.template(template.innerHTML);
+
+	var frame = document.getElementById("frame");
+	frame.innerHTML = templateFun(data);
+
+	//==============================
+	var dataPart = {"name":"Jake","age":31,"html":"<div style='background: #f00; height: 30px; line-height: 30px;'>html元素</div>"};
+	var defPart = {"joke":"<div class='text'>{{=it.name}} who?</div>"};
+
+	var parttmpl = document.getElementById("parttmpl");
+	var parttmplFun = doT.compile(parttmpl.innerHTML, defPart);
+
+	var frame2 = document.getElementById("frame2");
+	frame2.innerHTML = parttmplFun(dataPart);
+</script>
+</body>
+</html>
